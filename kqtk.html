@@ -1,49 +1,69 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kết Quả Tìm Kiếm | Trường Tiểu Học A Phong Thạnh Tây A</title>
+  <meta charset="utf-8">
+  <title>Chi tiết bài viết</title>
   <link rel="stylesheet" href="Styles/1.css">
 </head>
 <body>
-  <header>
-    <div class="header-top">
-      <div class="header-text">
-        <h2>ỦY BAN NHÂN DÂN XÃ PHONG HIỆP - TỈNH CÀ MAU</h2>
-        <h1>TRƯỜNG TIỂU HỌC A PHONG THẠNH TÂY A</h1>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <div class="mark">TH</div>
+        <h1>Trường Tiểu học A Phong Thạnh Tây A</h1>
       </div>
-    </div>
-  </header>
-
-  <nav>
-    <ul class="navbar">
-      <li><a href="index.html">Trang chủ</a></li>
-      <li><a href="#">Giới thiệu</a></li>
-    </ul>
-    <div class="search-container">
-      <form id="searchForm">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Tìm kiếm..." class="search-box">
-      </form>
-    </div>
-  </nav>
-
-  <main>
-    <div class="search-results-page">
-      <h2>Kết quả tìm kiếm cho: <span id="keyword-display"></span></h2>
-      <div id="results-list" class="results-container">
-        <p>Đang tải kết quả...</p>
+      <div class="search-area">
+        <input id="search-box" placeholder="🔎 Tìm..." onkeypress="handleSearch(event)">
       </div>
+      <div id="user-info" class="user-actions"></div>
     </div>
-  </main>
 
-  <footer class="site-footer">
-    <div class="footer-bottom">
-      <p>Bản quyền © 2025 - Trường Tiểu Học A Phong Thạnh Tây A</p>
-    </div>
-  </footer>
+    <main class="card">
+      <div id="post-detail">
+        <h2 class="detail-title" id="post-title"></h2>
+        <p class="meta" id="post-meta"></p>
+        <div id="post-content"></div>
+      </div>
+    </main>
+  </div>
 
-  <script src="Scripts/kqtk.js"></script>
+  <script type="module">
+    import { db } from './Scripts/firebase.js';
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const id = localStorage.getItem("postId");
+
+    async function load() {
+      if (!id) {
+        document.getElementById('post-title').textContent = "Không tìm thấy bài viết.";
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "posts", id));
+      if (!snap.exists()) {
+        document.getElementById('post-title').textContent = "Bài viết không tồn tại.";
+        return;
+      }
+
+      const d = snap.data();
+      document.getElementById('post-title').textContent = d.title;
+      document.getElementById('post-meta').textContent =
+        `${d.category || ''} • ${d.createdAt ? new Date(d.createdAt.toDate()).toLocaleString() : ''} • Tác giả: ${d.author || ''}`;
+      document.getElementById('post-content').innerHTML =
+        `<div style="white-space: pre-wrap; margin-top: 12px;">${d.content}</div>`;
+    }
+
+    load();
+
+    window.handleSearch = (e) => {
+      if (e.key === 'Enter') {
+        const k = document.getElementById('search-box').value.trim().toLowerCase();
+        if (k) {
+          localStorage.setItem('searchKeyword', k);
+          window.location.href = 'search.html';
+        }
+      }
+    };
+  </script>
 </body>
 </html>

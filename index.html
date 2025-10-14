@@ -2,122 +2,44 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trường Tiểu Học A Phong Thạnh Tây A</title>
+  <title>🏫 Trường Tiểu học A Phong Thạnh Tây A</title>
   <link rel="stylesheet" href="Styles/1.css">
 </head>
-
 <body>
-  <header>
-    <div class="header-top">
-      <div class="header-text">
-        <h2>ỦY BAN NHÂN DÂN XÃ PHONG HIỆP - TỈNH CÀ MAU</h2>
-        <h1>TRƯỜNG TIỂU HỌC A PHONG THẠNH TÂY A</h1>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <div class="mark">TH</div>
+        <h1>Trường Tiểu học A Phong Thạnh Tây A</h1>
       </div>
-    </div>
-  </header>
-
-  <nav>
-    <ul class="navbar">
-      <li><a href="#" data-target="trangchu">Trang chủ</a></li>
-      <li><a href="#" data-target="gioithieu">Giới thiệu</a></li>
-      <li><a href="#" data-target="hoatdong">Hoạt động</a></li>
-      <li><a href="#" data-target="thongbao">Thông báo</a></li>
-      <li><a href="#" data-target="tintuc">Tin tức</a></li>
-      <li><a href="#" data-target="tainuyen">Tài nguyên</a></li>
-      <li><a href="#" data-target="album">Album</a></li>
-      <li><a href="#" data-target="lienhe">Liên hệ</a></li>
-    </ul>
-
-    <div class="search-container">
-      <form id="searchForm">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Tìm kiếm..." class="search-box">
-      </form>
-    </div>
-  </nav>
-
-  <main>
-    <section id="content-trangchu" class="tab-content active">
-      <h2>Trang chủ</h2>
-      <p>Chào mừng bạn đến với website của Trường Tiểu Học A Phong Thạnh Tây A.</p>
-      <img src="school.jpg" alt="Ảnh trường" class="main-image">
-    </section>
-
-    <section id="content-gioithieu" class="tab-content">
-      <h2>Giới thiệu</h2>
-      <p>Giới thiệu về lịch sử, sứ mệnh và thành tích nổi bật của nhà trường...</p>
-    </section>
-
-    <section id="content-hoatdong" class="tab-content">
-      <h2>Hoạt động</h2>
-      <p>Thông tin các hoạt động học tập, phong trào, sự kiện của học sinh và giáo viên...</p>
-    </section>
-
-    <section id="content-thongbao" class="tab-content">
-      <h2>Thông báo</h2>
-      <p>Các thông báo mới nhất từ Ban giám hiệu và nhà trường...</p>
-    </section>
-
-    <section id="content-tintuc" class="tab-content">
-      <h2>Tin tức</h2>
-      <p>Cập nhật các tin tức nổi bật về giáo dục và hoạt động của trường...</p>
-    </section>
-
-    <section id="content-tainuyen" class="tab-content">
-      <h2>Tài nguyên</h2>
-      <p>Tài liệu học tập, giáo trình, bài giảng phục vụ cho học sinh và giáo viên...</p>
-    </section>
-
-    <section id="content-album" class="tab-content">
-      <h2>Album</h2>
-      <p>Hình ảnh sinh hoạt, hoạt động ngoại khóa, và các sự kiện đặc sắc...</p>
-    </section>
-
-    <section id="content-lienhe" class="tab-content">
-      <h2>Liên hệ</h2>
-      <p>Địa chỉ, số điện thoại và thông tin liên hệ với nhà trường...</p>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-container">
-      <div class="footer-section contact-info">
-        <p class="school-name">TRƯỜNG TIỂU HỌC A PHONG THẠNH TÂY A</p>
-        <p><strong>Địa chỉ:</strong> Ấp ..., Xã Phong Hiệp, Huyện Trần Văn Thời, Tỉnh Cà Mau</p>
-        <p><strong>Điện thoại:</strong> 0290.xxx.xxxx</p>
-        <p><strong>Email:</strong> thaptay-a@edu.vn</p>
+      <div class="search-area">
+        <input type="text" id="search-box" placeholder="🔎 Tìm bài viết..." onkeypress="handleSearch(event)">
       </div>
+      <div id="user-info" class="user-actions"></div>
+    </header>
 
-      <div class="footer-section quick-links">
-        <h4>Đào tạo & Tuyển sinh</h4>
-        <ul>
-          <li><a href="#">Chương trình học</a></li>
-          <li><a href="#">Thông tin tuyển sinh</a></li>
-          <li><a href="#">Thủ tục nhập học</a></li>
-        </ul>
+    <section class="hero">
+      <div>
+        <h2>Chào mừng đến với trang web của trường!</h2>
+        <p>📚 Cập nhật tin tức, thông báo và hoạt động mới nhất.</p>
       </div>
-
-      <div class="footer-section nav-links">
-        <h4>Truy cập nhanh</h4>
-        <ul>
-          <li><a href="#">Sơ đồ nhà trường</a></li>
-          <li><a href="#">Thông báo mới</a></li>
-          <li><a href="#">Album ảnh</a></li>
-          <li><a href="#">Liên hệ</a></li>
-        </ul>
+      <div>
+        <select id="filter-select" onchange="filterByCategory()">
+          <option value="">Tất cả</option>
+          <option value="Tin tức">Tin tức</option>
+          <option value="Thông báo">Thông báo</option>
+          <option value="Học tập">Học tập</option>
+          <option value="Hoạt động">Hoạt động</option>
+        </select>
       </div>
-    </div>
+    </section>
 
-    <div class="footer-bottom">
-      <p>
-        Bản quyền © 2025 Trường Tiểu Học A Phong Thạnh Tây A |
-        <a href="#">Điều khoản</a> |
-        <a href="#">Chính sách bảo mật</a>
-      </p>
-    </div>
-  </footer>
+    <main class="card">
+      <h2>📰 Danh sách bài viết</h2>
+      <div id="post-list"></div>
+    </main>
+  </div>
 
-  <script src="Scripts/1.js"></script>
+  <script type="module" src="Scripts/main.js"></script>
 </body>
 </html>

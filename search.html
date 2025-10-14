@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>Kết quả tìm kiếm</title>
+  <link rel="stylesheet" href="Styles/1.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <div class="mark">TH</div>
+        <h1>Trường Tiểu học A Phong Thạnh Tây A</h1>
+      </div>
+      <div class="search-area">
+        <input id="search-box" placeholder="🔎 Tìm..." onkeypress="handleSearch(event)">
+      </div>
+      <div id="user-info" class="user-actions"></div>
+    </div>
+
+    <main class="card">
+      <h2>Kết quả tìm kiếm</h2>
+      <div id="results"></div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { db } from './Scripts/firebase.js';
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const keyword = localStorage.getItem("searchKeyword")?.toLowerCase() || "";
+    const resultsDiv = document.getElementById("results");
+
+    async function searchPosts() {
+      const snap = await getDocs(collection(db, "posts"));
+      let found = 0;
+
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const title = (d.title || "").toLowerCase();
+        const content = (d.content || "").toLowerCase();
+
+        if (title.includes(keyword) || content.includes(keyword)) {
+          found++;
+          const el = document.createElement("div");
+          el.className = "post-preview";
+          el.innerHTML = `
+            <h3>${d.title}</h3>
+            <p class="meta">${d.category || ''} • ${d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString() : ''}</p>
+            <p>${(d.content || '').slice(0, 140)}...</p>
+            <div class="actions">
+              <button class="btn" onclick="openPost('${docSnap.id}')">Xem</button>
+            </div>
+          `;
+          resultsDiv.appendChild(el);
+        }
+      });
+
+      if (found === 0) {
+        resultsDiv.innerHTML = "<p>Không tìm thấy bài viết phù hợp.</p>";
+      }
+    }
+
+    window.openPost = function(id) {
+      localStorage.setItem('postId', id);
+      window.location.href = 'kqtk.html';
+    };
+
+    searchPosts();
+
+    window.handleSearch = (e) => {
+      if (e.key === 'Enter') {
+        const k = document.getElementById('search-box').value.trim().toLowerCase();
+        if (k) {
+          localStorage.setItem('searchKeyword', k);
+          window.location.href = 'search.html';
+        }
+      }
+    };
+  </script>
+</body>
+</html>

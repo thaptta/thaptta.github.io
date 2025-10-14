@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>📝 Đăng bài viết</title>
+  <link rel="stylesheet" href="Styles/1.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>📝 Đăng bài viết mới</h2>
+
+    <select id="post-category">
+      <option value="">-- Chọn mục --</option>
+      <option value="Tin tức">Tin tức</option>
+      <option value="Thông báo">Thông báo</option>
+      <option value="Học tập">Học tập</option>
+      <option value="Hoạt động">Hoạt động</option>
+    </select>
+
+    <input type="text" id="post-title" placeholder="Tiêu đề bài viết">
+    <textarea id="post-content" placeholder="Nội dung bài viết..."></textarea>
+
+    <button class="btn" onclick="submitPost()">Đăng bài</button>
+    <p id="post-message"></p>
+  </div>
+
+  <script type="module" src="Scripts/post.js"></script>
+</body>
+</html>
