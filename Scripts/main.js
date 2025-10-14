@@ -23,15 +23,18 @@ async function loadPosts(category = "") {
     count++;
     const item = document.createElement("div");
     item.className = "post-preview";
-    const date = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : "";
+
+    const isAuthor = auth.currentUser && auth.currentUser.email === data.author;
     item.innerHTML = `
       <h3>${data.title}</h3>
-      <p class="meta">${data.category || ""} • ${date}</p>
+      <p class="meta">${data.category || ""} • ${date} • Tác giả: ${data.author || "?"}</p>
       <p>${(data.content || "").slice(0, 150)}...</p>
       <div class="actions">
-        <button class="btn" onclick="viewPost('${docSnap.id}')">Xem chi tiết</button>
+      <button class="btn" onclick="viewPost('${docSnap.id}')">Xem chi tiết</button>
+        ${isAuthor ? `<button class="btn ghost" onclick="deletePost('${docSnap.id}')">🗑️ Xóa</button>` : ""}
       </div>
     `;
+
     list.appendChild(item);
   });
 
@@ -88,3 +91,16 @@ window.logout = function() {
 
 // 🚀 Gọi hàm khi tải trang
 loadPosts();
+
+import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+window.deletePost = async function(id) {
+  if (!confirm("Bạn có chắc muốn xóa bài viết này không?")) return;
+  try {
+    await deleteDoc(doc(db, "posts", id));
+    alert("✅ Đã xóa bài viết thành công!");
+    window.location.reload();
+  } catch (err) {
+    alert("❌ Lỗi khi xóa bài: " + err.message);
+  }
+};

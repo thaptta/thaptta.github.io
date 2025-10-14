@@ -23,47 +23,72 @@
         <h2 class="detail-title" id="post-title"></h2>
         <p class="meta" id="post-meta"></p>
         <div id="post-content"></div>
+        <div id="delete-btn-container"></div>
       </div>
     </main>
   </div>
 
   <script type="module">
-    import { db } from './Scripts/firebase.js';
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { db, auth } from './Scripts/firebase.js';
+  import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    const id = localStorage.getItem("postId");
+  const id = localStorage.getItem("postId");
 
-    async function load() {
-      if (!id) {
-        document.getElementById('post-title').textContent = "Không tìm thấy bài viết.";
-        return;
-      }
-
-      const snap = await getDoc(doc(db, "posts", id));
-      if (!snap.exists()) {
-        document.getElementById('post-title').textContent = "Bài viết không tồn tại.";
-        return;
-      }
-
-      const d = snap.data();
-      document.getElementById('post-title').textContent = d.title;
-      document.getElementById('post-meta').textContent =
-        `${d.category || ''} • ${d.createdAt ? new Date(d.createdAt.toDate()).toLocaleString() : ''} • Tác giả: ${d.author || ''}`;
-      document.getElementById('post-content').innerHTML =
-        `<div style="white-space: pre-wrap; margin-top: 12px;">${d.content}</div>`;
+  async function load() {
+    if (!id) {
+      document.getElementById('post-title').textContent = "Không tìm thấy bài viết.";
+      return;
     }
 
-    load();
+    const snap = await getDoc(doc(db, "posts", id));
+    if (!snap.exists()) {
+      document.getElementById('post-title').textContent = "Bài viết không tồn tại.";
+      return;
+    }
 
-    window.handleSearch = (e) => {
-      if (e.key === 'Enter') {
-        const k = document.getElementById('search-box').value.trim().toLowerCase();
-        if (k) {
-          localStorage.setItem('searchKeyword', k);
-          window.location.href = 'search.html';
-        }
+    const d = snap.data();
+    document.getElementById('post-title').textContent = d.title;
+    document.getElementById('post-meta').textContent =
+      `${d.category || ''} • ${d.createdAt ? new Date(d.createdAt.toDate()).toLocaleString() : ''} • Tác giả: ${d.author || ''}`;
+    document.getElementById('post-content').innerHTML =
+      `<div style="white-space: pre-wrap; margin-top: 12px;">${d.content}</div>`;
+
+    // 🟢 Kiểm tra nếu người đăng nhập là tác giả thì hiện nút xoá
+    onAuthStateChanged(auth, user => {
+      if (user && user.email === d.author) {
+        document.getElementById("delete-btn-container").innerHTML = `
+          <button class="btn ghost" onclick="deletePost('${id}')">🗑️ Xóa bài viết</button>
+        `;
       }
-    };
-  </script>
+    });
+  }
+
+  // 🚮 Hàm xoá bài viết
+  window.deletePost = async function(id) {
+    if (!confirm("Bạn có chắc muốn xóa bài viết này không?")) return;
+    try {
+      await deleteDoc(doc(db, "posts", id));
+      alert("✅ Đã xóa bài viết thành công!");
+      window.location.href = "index.html";
+    } catch (err) {
+      alert("❌ Lỗi khi xóa bài: " + err.message);
+    }
+  };
+
+  load();
+
+  // 🔍 Tìm kiếm lại bài
+  window.handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      const k = document.getElementById('search-box').value.trim().toLowerCase();
+      if (k) {
+        localStorage.setItem('searchKeyword', k);
+        window.location.href = 'search.html';
+      }
+    }
+  };
+</script>
+
 </body>
 </html>
