@@ -55,17 +55,17 @@ async function loadPostDetail() {
 
     titleEl.textContent = post.title;
     metaEl.textContent = `${post.category || ""} • ${date} • 👤 ${post.author || "Không rõ"}`;
-    contentEl.textContent = post.content;
+    contentEl.innerHTML = `<div style="white-space: pre-wrap;">${post.content}</div>`;
 
     // 🖼️ Ảnh minh họa
-    if (post.imageURL) {
-      imageEl.src = post.imageURL;
+    if (post.imageUrl) {
+      imageEl.src = post.imageUrl;
       imageEl.style.display = "block";
     }
 
     // 📎 File đính kèm
-    if (post.fileURL) {
-      fileEl.innerHTML = `<a href="${post.fileURL}" target="_blank" class="download">📎 Tải tệp đính kèm</a>`;
+    if (post.fileUrl) {
+      fileEl.innerHTML = `<a href="${post.fileUrl}" target="_blank" class="download">📎 Tải tệp đính kèm</a>`;
     }
 
   } catch (err) {

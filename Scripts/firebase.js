@@ -7,7 +7,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAnxzJHGqqf_dhoOfZ4NaQ6W4SwNXyB-f8",
   authDomain: "thaptta.firebaseapp.com",
   projectId: "thaptta",
-  storageBucket: "thaptta.firebasestorage.app",
+  storageBucket: "thaptta.appspot.com",
   messagingSenderId: "1080889110589",
   appId: "1:1080889110589:web:e5963989bbbf2ec1967a54"
 };

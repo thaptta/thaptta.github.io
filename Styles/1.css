@@ -395,3 +395,13 @@ input[type="file"] {
     padding: 20px;
   }
 }
+
+.post h3 a {
+  color: #0056b3;
+  text-decoration: none;
+}
+
+.post h3 a:hover {
+  text-decoration: underline;
+  color: #007bff;
+}

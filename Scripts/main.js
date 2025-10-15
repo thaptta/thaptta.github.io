@@ -59,7 +59,7 @@ async function loadPosts(filterCategory = "") {
         <div class="post">
           ${post.imageUrl ? `<img src="${post.imageUrl}" alt="Ảnh bài viết" class="post-img">` : ""}
           <div class="post-text">
-            <h3>${post.title}</h3>
+            <h3><a href="post_detail.html?id=${doc.id}">${post.title}</a></h3>
             <p><strong>📅</strong> ${date}</p>
             <p>${post.content}</p>
             ${post.fileUrl ? `<p><a href="${post.fileUrl}" target="_blank" class="download">📎 Tải tệp đính kèm</a></p>` : ""}

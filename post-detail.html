@@ -2,32 +2,58 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>📰 Chi tiết bài viết</title>
+  <title>📄 Chi tiết bài viết</title>
   <link rel="stylesheet" href="Styles/1.css">
 </head>
 <body>
   <div class="container">
-    <header class="header">
-      <div class="header-container">
-        <img src="logo.png" alt="Logo" class="logo">
-        <div class="title">
-          <h1>Trường Tiểu học A Phong Thạnh Tây A</h1>
-          <p>Phòng Giáo dục và Đào tạo Thị xã Giá Rai</p>
-        </div>
-        <div id="user-info"></div>
-      </div>
-    </header>
-
-    <main class="card">
-      <h2 id="post-title">📰 Đang tải bài viết...</h2>
-      <p class="meta" id="post-meta"></p>
-      <img id="post-image" class="post-img" style="display:none;">
-      <p id="post-content"></p>
-      <p id="post-file" style="margin-top: 10px;"></p>
-      <button class="btn" onclick="window.location.href='index.html'">⬅ Quay lại</button>
-    </main>
+    <div id="post-detail">⏳ Đang tải bài viết...</div>
   </div>
 
-  <script type="module" src="Scripts/detail.js"></script>
+  <script type="module">
+    import { db } from './Scripts/firebase.js';
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // 🔹 Lấy ID bài viết từ URL (?id=...)
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get("id");
+
+    const postDetailDiv = document.getElementById("post-detail");
+
+    async function loadPost() {
+      if (!postId) {
+        postDetailDiv.innerHTML = "<p>❌ Không tìm thấy bài viết.</p>";
+        return;
+      }
+
+      try {
+        const docRef = doc(db, "posts", postId);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+          postDetailDiv.innerHTML = "<p>❌ Bài viết không tồn tại.</p>";
+          return;
+        }
+
+        const post = docSnap.data();
+        const date = post.createdAt?.toDate().toLocaleString("vi-VN") || "Chưa rõ";
+
+        postDetailDiv.innerHTML = `
+          <h2>${post.title}</h2>
+          <p><strong>🕓 Ngày đăng:</strong> ${date}</p>
+          <p><strong>👤 Tác giả:</strong> ${post.author}</p>
+          <p><strong>📂 Danh mục:</strong> ${post.category}</p>
+          ${post.imageUrl ? `<img src="${post.imageUrl}" class="detail-img">` : ""}
+          <p>${post.content}</p>
+          ${post.fileUrl ? `<p><a href="${post.fileUrl}" target="_blank">📎 Xem tệp đính kèm</a></p>` : ""}
+          <button onclick="window.history.back()" class="btn">⬅️ Quay lại</button>
+        `;
+      } catch (error) {
+        postDetailDiv.innerHTML = `<p style="color:red">❌ Lỗi tải dữ liệu: ${error.message}</p>`;
+      }
+    }
+
+    loadPost();
+  </script>
 </body>
 </html>

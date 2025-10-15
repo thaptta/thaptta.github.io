@@ -1,15 +1,7 @@
-// Scripts/post.js
-import { db, auth, storage } from './firebase.js';
+import { db, auth } from './firebase.js';
 import {
-  collection,
-  addDoc,
-  serverTimestamp
+  collection, addDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const allowedEmails = [
@@ -33,6 +25,21 @@ onAuthStateChanged(auth, user => {
   }
 });
 
+// 🔹 Hàm upload lên Imgbb
+async function uploadImageToImgbb(file) {
+  const apiKey = "2c029887fa5071fb59b4d79f44f96a7f"; // 🔑 API key Imgbb
+  const formData = new FormData();
+  formData.append("image", file);
+  const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+    method: "POST",
+    body: formData
+  });
+  const result = await response.json();
+  if (!result.success) throw new Error("Không thể tải lên Imgbb");
+  return result.data.url;
+}
+
+// 📝 Gửi bài viết
 window.submitPost = async function () {
   const title = document.getElementById("post-title").value.trim();
   const content = document.getElementById("post-content").value.trim();
@@ -55,21 +62,9 @@ window.submitPost = async function () {
     let imageUrl = "";
     let fileUrl = "";
 
-    // 🖼️ Nếu có ảnh thì tải lên Storage
-    if (imageFile) {
-      const imageRef = ref(storage, `postImages/${Date.now()}_${imageFile.name}`);
-      await uploadBytes(imageRef, imageFile);
-      imageUrl = await getDownloadURL(imageRef);
-    }
+    if (imageFile) imageUrl = await uploadImageToImgbb(imageFile);
+    if (attachFile) fileUrl = await uploadImageToImgbb(attachFile);
 
-    // 📎 Nếu có tệp đính kèm thì tải lên Storage
-    if (attachFile) {
-      const fileRef = ref(storage, `postFiles/${Date.now()}_${attachFile.name}`);
-      await uploadBytes(fileRef, attachFile);
-      fileUrl = await getDownloadURL(fileRef);
-    }
-
-    // 🗂️ Lưu vào Firestore
     await addDoc(collection(db, "posts"), {
       title,
       content,
