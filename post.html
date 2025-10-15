@@ -20,6 +20,14 @@
     <input type="text" id="post-title" placeholder="Tiêu đề bài viết">
     <textarea id="post-content" placeholder="Nội dung bài viết..."></textarea>
 
+    <!-- 🖼️ Chọn ảnh -->
+    <label>Ảnh minh họa:</label>
+    <input type="file" id="post-image" accept="image/*">
+
+    <!-- 📎 Chọn tệp đính kèm -->
+    <label>Tệp đính kèm (PDF, DOCX...):</label>
+    <input type="file" id="post-file" accept=".pdf,.doc,.docx,.txt">
+
     <button class="btn" onclick="submitPost()">Đăng bài</button>
     <p id="post-message"></p>
   </div>

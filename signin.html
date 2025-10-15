@@ -2,18 +2,45 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Đăng nhập</title>
+  <title>Đăng ký tài khoản</title>
   <link rel="stylesheet" href="Styles/1.css">
 </head>
 <body>
   <div class="form-container">
-    <h2>🔑 Đăng nhập</h2>
-    <input type="email" id="signin-email" placeholder="Email">
-    <input type="password" id="signin-password" placeholder="Mật khẩu">
-    <button class="btn" id="signin-btn">Đăng nhập</button>
-    <p id="signin-message"></p>
+    <h2>🧾 Đăng ký tài khoản</h2>
+    <input type="email" id="signup-email" placeholder="Email">
+    <input type="password" id="signup-password" placeholder="Mật khẩu">
+    <button class="btn" onclick="signup()">Đăng ký</button>
+    <p id="signup-message"></p>
+    <div id="login-section" style="display: none;">
+      <button class="btn ghost" onclick="goToLogin()">Đăng nhập</button>
+    </div>
   </div>
 
-  <script type="module" src="Scripts/auth.js"></script>
+  <script>
+    function signup() {
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value.trim();
+      const message = document.getElementById("signup-message");
+      const loginSection = document.getElementById("login-section");
+
+      if (!email || !password) {
+        message.textContent = "⚠️ Vui lòng nhập đầy đủ thông tin!";
+        message.style.color = "red";
+        return;
+      }
+
+      // Mô phỏng đăng ký thành công
+      message.textContent = "✅ Đăng ký thành công!";
+      message.style.color = "green";
+
+      // Hiện nút đăng nhập
+      loginSection.style.display = "block";
+    }
+
+    function goToLogin() {
+      window.location.href = "login.html";
+    }
+  </script>
 </body>
 </html>

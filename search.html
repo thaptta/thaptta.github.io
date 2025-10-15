@@ -45,6 +45,7 @@
           const el = document.createElement("div");
           el.className = "post-preview";
           el.innerHTML = `
+            ${d.imageURL ? `<img src="${d.imageURL}" alt="Ảnh minh họa" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:8px;">` : ""}
             <h3>${d.title}</h3>
             <p class="meta">${d.category || ''} • ${d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString() : ''}</p>
             <p>${(d.content || '').slice(0, 140)}...</p>
@@ -61,13 +62,20 @@
       }
     }
 
+    // ✅ Xử lý nếu không có keyword
+    if (!keyword) {
+      resultsDiv.innerHTML = "<p>Vui lòng nhập từ khóa để tìm kiếm.</p>";
+    } else {
+      searchPosts();
+    }
+
+    // 👉 Mở bài viết chi tiết
     window.openPost = function(id) {
       localStorage.setItem('postId', id);
-      window.location.href = 'kqtk.html';
+      window.location.href = 'kqtk.html'; // đổi đúng tên file chi tiết
     };
 
-    searchPosts();
-
+    // 🔍 Tìm lại bài mới
     window.handleSearch = (e) => {
       if (e.key === 'Enter') {
         const k = document.getElementById('search-box').value.trim().toLowerCase();

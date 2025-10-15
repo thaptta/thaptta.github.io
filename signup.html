@@ -12,7 +12,35 @@
     <input type="password" id="signup-password" placeholder="Mật khẩu">
     <button class="btn" onclick="signup()">Đăng ký</button>
     <p id="signup-message"></p>
+    <div id="login-section" style="display: none;">
+      <button class="btn ghost" onclick="goToLogin()">Đăng nhập</button>
+    </div>
   </div>
-  <script type="module" src="Scripts/auth.js"></script>
+
+  <script>
+    function signup() {
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value.trim();
+      const message = document.getElementById("signup-message");
+      const loginSection = document.getElementById("login-section");
+
+      if (!email || !password) {
+        message.textContent = "⚠️ Vui lòng nhập đầy đủ thông tin!";
+        message.style.color = "red";
+        return;
+      }
+
+      // Mô phỏng đăng ký thành công
+      message.textContent = "✅ Đăng ký thành công!";
+      message.style.color = "green";
+
+      // Hiện nút đăng nhập
+      loginSection.style.display = "block";
+    }
+
+    function goToLogin() {
+      window.location.href = "login.html";
+    }
+  </script>
 </body>
 </html>

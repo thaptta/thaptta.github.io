@@ -1,78 +1,19 @@
 // Scripts/main.js
-import { db } from './firebase.js';
-import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { db, auth } from './firebase.js';
+import { collection, query, orderBy, getDocs, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { auth } from './firebase.js';
 
-// 📰 Tải danh sách bài viết
-async function loadPosts(category = "") {
-  const list = document.getElementById("post-list");
-  list.innerHTML = "<p>Đang tải bài viết...</p>";
+const postsContainer = document.getElementById("posts-container");
+const announcementList = document.getElementById("announcement-list");
 
-  const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-  const snap = await getDocs(q);
-
-  let count = 0;
-  list.innerHTML = "";
-
-  snap.forEach(docSnap => {
-    const data = docSnap.data();
-
-    if (category && data.category !== category) return;
-
-    count++;
-    const item = document.createElement("div");
-    item.className = "post-preview";
-
-    const isAuthor = auth.currentUser && auth.currentUser.email === data.author;
-    item.innerHTML = `
-      <h3>${data.title}</h3>
-      <p class="meta">${data.category || ""} • ${date} • Tác giả: ${data.author || "?"}</p>
-      <p>${(data.content || "").slice(0, 150)}...</p>
-      <div class="actions">
-      <button class="btn" onclick="viewPost('${docSnap.id}')">Xem chi tiết</button>
-        ${isAuthor ? `<button class="btn ghost" onclick="deletePost('${docSnap.id}')">🗑️ Xóa</button>` : ""}
-      </div>
-    `;
-
-    list.appendChild(item);
-  });
-
-  if (count === 0) list.innerHTML = "<p>Chưa có bài viết nào.</p>";
-}
-
-// 🔍 Tìm kiếm
-window.handleSearch = function (e) {
-  if (e.key === "Enter") {
-    const keyword = document.getElementById("search-box").value.trim().toLowerCase();
-    if (keyword) {
-      localStorage.setItem("searchKeyword", keyword);
-      window.location.href = "search.html";
-    }
-  }
-};
-
-// 🔎 Lọc bài theo danh mục
-window.filterByCategory = function() {
-  const value = document.getElementById("filter-select").value;
-  loadPosts(value);
-};
-
-// 🧭 Chuyển tới bài viết chi tiết
-window.viewPost = function(id) {
-  localStorage.setItem("postId", id);
-  window.location.href = "kqtk.html";
-};
-
-// 👤 Theo dõi trạng thái đăng nhập để hiện nút đúng
+// 🟢 Hiển thị thông tin người dùng
 onAuthStateChanged(auth, user => {
   const info = document.getElementById("user-info");
   if (!info) return;
 
   if (user) {
     info.innerHTML = `
-      <span class="user-email">${user.email}</span>
-      <button class="btn" id="post-btn" onclick="window.location.href='post.html'">Đăng bài</button>
+      <span>${user.email}</span>
       <button class="btn ghost" onclick="logout()">Đăng xuất</button>
     `;
   } else {
@@ -83,24 +24,71 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-// 🧱 Hàm đăng xuất
-window.logout = function() {
+window.logout = function () {
   auth.signOut();
   window.location.reload();
 };
 
-// 🚀 Gọi hàm khi tải trang
+// 🗂️ Hàm tải danh sách bài viết
+async function loadPosts(filterCategory = "") {
+  postsContainer.innerHTML = "<p>⏳ Đang tải bài viết...</p>";
+
+  try {
+    let q;
+    if (filterCategory) {
+      q = query(collection(db, "posts"), where("category", "==", filterCategory), orderBy("createdAt", "desc"));
+    } else {
+      q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    }
+
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+      postsContainer.innerHTML = "<p>😔 Chưa có bài viết nào.</p>";
+      return;
+    }
+
+    postsContainer.innerHTML = "";
+    announcementList.innerHTML = "";
+
+    snapshot.forEach(doc => {
+      const post = doc.data();
+      const date = post.createdAt?.toDate().toLocaleString("vi-VN") || "Chưa rõ";
+
+      // 🖼️ Tạo thẻ bài viết chính
+      const postHTML = `
+        <div class="post">
+          ${post.imageUrl ? `<img src="${post.imageUrl}" alt="Ảnh bài viết" class="post-img">` : ""}
+          <div class="post-text">
+            <h3>${post.title}</h3>
+            <p><strong>📅</strong> ${date}</p>
+            <p>${post.content}</p>
+            ${post.fileUrl ? `<p><a href="${post.fileUrl}" target="_blank" class="download">📎 Tải tệp đính kèm</a></p>` : ""}
+            <p class="author">👤 Đăng bởi: ${post.author}</p>
+          </div>
+        </div>
+      `;
+
+      postsContainer.innerHTML += postHTML;
+
+      // Nếu là thông báo thì thêm vào danh sách bên phải
+      if (post.category === "Thông báo") {
+        announcementList.innerHTML += `<li><a href="#">${post.title}</a></li>`;
+      }
+    });
+
+  } catch (err) {
+    postsContainer.innerHTML = `<p style="color:red">❌ Lỗi tải dữ liệu: ${err.message}</p>`;
+  }
+}
+
+// Gọi hàm khi trang mở
 loadPosts();
 
-import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-window.deletePost = async function(id) {
-  if (!confirm("Bạn có chắc muốn xóa bài viết này không?")) return;
-  try {
-    await deleteDoc(doc(db, "posts", id));
-    alert("✅ Đã xóa bài viết thành công!");
-    window.location.reload();
-  } catch (err) {
-    alert("❌ Lỗi khi xóa bài: " + err.message);
-  }
-};
+// 🧭 Lọc theo danh mục khi bấm menu
+document.querySelectorAll("[data-category]").forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    const cat = e.target.getAttribute("data-category");
+    loadPosts(cat);
+  });
+});

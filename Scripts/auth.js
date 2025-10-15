@@ -13,6 +13,12 @@ window.signup = function () {
   const password = document.getElementById("signup-password").value.trim();
   const message = document.getElementById("signup-message");
 
+  if (!email || !password) {
+    message.textContent = "⚠️ Vui lòng nhập đủ email và mật khẩu.";
+    message.style.color = "orange";
+    return;
+  }
+
   createUserWithEmailAndPassword(auth, email, password)
     .then(() => {
       message.textContent = "✅ Đăng ký thành công! Hãy quay lại để đăng nhập.";
@@ -26,13 +32,19 @@ window.signup = function () {
 
 // 🟦 Xử lý nút đăng nhập
 const signinButton = document.getElementById('signin-btn');
-
 if (signinButton) {
   signinButton.addEventListener('click', function() {
     const email = document.getElementById("signin-email").value.trim();
     const password = document.getElementById("signin-password").value.trim();
     const message = document.getElementById("signin-message");
 
+    if (!email || !password) {
+      message.textContent = "⚠️ Vui lòng nhập đủ email và mật khẩu.";
+      message.style.color = "orange";
+      return;
+    }
+
+    signinButton.disabled = true;
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         message.textContent = "✅ Đăng nhập thành công!";
@@ -42,11 +54,12 @@ if (signinButton) {
       .catch(error => {
         message.textContent = "❌ Lỗi: " + error.message;
         message.style.color = "red";
-      });
+      })
+      .finally(() => signinButton.disabled = false);
   });
 }
 
-// 🟡 Tự động nhận biết trạng thái đăng nhập
+// 🟡 Theo dõi trạng thái đăng nhập
 onAuthStateChanged(auth, user => {
   const info = document.getElementById('user-info');
   if (!info) return;

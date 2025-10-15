@@ -6,39 +6,65 @@
   <link rel="stylesheet" href="Styles/1.css">
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <div class="logo">
-        <div class="mark">TH</div>
-        <h1>Trường Tiểu học A Phong Thạnh Tây A</h1>
-      </div>
-      <div class="search-area">
-        <input type="text" id="search-box" placeholder="🔎 Tìm bài viết..." onkeypress="handleSearch(event)">
-      </div>
-      <div id="user-info" class="user-actions"></div>
-    </header>
 
-    <section class="hero">
-      <div>
-        <h2>Chào mừng đến với trang web của trường!</h2>
-        <p>📚 Cập nhật tin tức, thông báo và hoạt động mới nhất.</p>
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="header-container">
+      <img src="logo.png" alt="Logo trường" class="logo">
+      <div class="title">
+        <h1>Trường Tiểu học A Phong Thạnh Tây A</h1>
+        <p>Phòng Giáo dục và Đào tạo Thị xã Giá Rai</p>
       </div>
-      <div>
-        <select id="filter-select" onchange="filterByCategory()">
-          <option value="">Tất cả</option>
-          <option value="Tin tức">Tin tức</option>
-          <option value="Thông báo">Thông báo</option>
-          <option value="Học tập">Học tập</option>
-          <option value="Hoạt động">Hoạt động</option>
-        </select>
-      </div>
+      <div id="user-info"></div>
+    </div>
+  </header>
+
+  <!-- ===== Navbar ===== -->
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Trang chủ</a></li>
+      <li><a href="#">Giới thiệu</a></li>
+      <li><a href="#" data-category="Tin tức">Tin tức</a></li>
+      <li><a href="#" data-category="Thông báo">Thông báo</a></li>
+      <li><a href="#" data-category="Học tập">Học tập</a></li>
+      <li><a href="#" data-category="Hoạt động">Hoạt động</a></li>
+      <li><a href="#">Liên hệ</a></li>
+      <li><a href="post.html">📝 Đăng bài</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== Main Layout ===== -->
+  <div class="main">
+    <!-- Cột trái -->
+    <aside class="sidebar">
+      <h3>Danh mục</h3>
+      <ul>
+        <li><a href="#" data-category="Tin tức">Tin tức</a></li>
+        <li><a href="#" data-category="Thông báo">Thông báo</a></li>
+        <li><a href="#" data-category="Học tập">Học tập</a></li>
+        <li><a href="#" data-category="Hoạt động">Hoạt động</a></li>
+      </ul>
+    </aside>
+
+    <!-- Cột giữa -->
+    <section class="content">
+      <h2>📰 Tin nổi bật</h2>
+      <div id="posts-container" class="posts"></div>
     </section>
 
-    <main class="card">
-      <h2>📰 Danh sách bài viết</h2>
-      <div id="post-list"></div>
-    </main>
+    <!-- Cột phải -->
+    <aside class="rightbar">
+      <h3>📢 Thông báo</h3>
+      <ul id="announcement-list">
+        <!-- Tự động thêm các thông báo -->
+      </ul>
+    </aside>
   </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <p>© 2025 Trường Tiểu học A Phong Thạnh Tây A - Thiết kế bởi Nhóm CNTT</p>
+  </footer>
 
   <script type="module" src="Scripts/main.js"></script>
 </body>

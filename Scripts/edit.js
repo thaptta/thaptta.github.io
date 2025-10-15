@@ -27,6 +27,15 @@ async function loadPostForEdit() {
   }
 
   const data = snap.data();
+  const user = auth.currentUser;
+
+  // 🔒 Chỉ cho phép tác giả bài viết chỉnh sửa
+  if (!user || user.email !== data.author) {
+    alert("⚠️ Bạn không có quyền chỉnh sửa bài viết này.");
+    window.location.href = "index.html";
+    return;
+  }
+
   document.getElementById("post-title").value = data.title;
   document.getElementById("post-content").value = data.content;
   document.getElementById("post-category").value = data.category;
@@ -61,7 +70,7 @@ window.updatePost = async function () {
   }
 };
 
-// 🧑‍🏫 Chỉ cho phép tác giả bài viết được chỉnh sửa
+// 🧑‍🏫 Xác minh người dùng trước khi tải bài viết
 onAuthStateChanged(auth, user => {
   if (!user) {
     alert("Bạn cần đăng nhập để chỉnh sửa bài viết.");
