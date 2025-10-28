@@ -87,3 +87,17 @@ window.submitPost = async function () {
     msg.style.color = "red";
   }
 };
+
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  document.querySelectorAll(".post-img").forEach(img => {
+    img.addEventListener("click", () => {
+      modal.style.display = "flex";
+      modalImg.src = img.src;
+    });
+  });
+
+  modal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
