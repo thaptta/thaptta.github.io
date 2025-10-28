@@ -4,6 +4,95 @@
   <meta charset="UTF-8">
   <title>📝 Đăng bài viết</title>
   <link rel="stylesheet" href="Styles/1.css">
+  <style>
+    /* Căn chỉnh form đẹp hơn */
+    .form-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .form-container select,
+    .form-container input,
+    .form-container textarea {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .form-container button {
+      display: block;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .form-container button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Preview ảnh */
+    .preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .preview-container img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: 1px solid #ccc;
+    }
+
+    .preview-container img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modal xem ảnh */
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .image-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
+  </style>
 </head>
 <body>
   <div class="form-container">
@@ -18,30 +107,80 @@
     </select>
 
     <input type="text" id="post-title" placeholder="Tiêu đề bài viết">
-    <textarea id="post-content" placeholder="Nội dung bài viết..."></textarea>
+    <textarea id="post-content" placeholder="Nội dung bài viết..." rows="6"></textarea>
 
-<<<<<<< HEAD
-    <!--  Chọn ảnh -->
-    <label>Ảnh minh họa:</label>
-    <input type="file" id="post-image" accept="image/*">
-
-    <!--  Chọn tệp đính kèm -->
-=======
-    <label>Ảnh minh họa (chọn nhiều ảnh nếu muốn):</label>
+    <!-- Chọn nhiều ảnh -->
+    <label>📸 Ảnh minh họa (có thể chọn nhiều):</label>
     <input type="file" id="post-image" accept="image/*" multiple>
 
->>>>>>> ad0f2cd3e32262185065ae10c98474a479c6c250
-    <label>Tệp đính kèm (PDF, DOCX...):</label>
+    <!-- Hiển thị ảnh xem trước -->
+    <div class="preview-container" id="imagePreviewContainer"></div>
+
+    <!-- Tệp đính kèm -->
+    <label>📎 Tệp đính kèm (PDF, DOCX...):</label>
     <input type="file" id="post-file" accept=".pdf,.doc,.docx,.txt">
 
-    <button class="btn" onclick="submitPost()">Đăng bài</button>
+    <button class="btn" onclick="submitPost()">🚀 Đăng bài</button>
     <p id="post-message"></p>
   </div>
-  
-<div id="imageModal" class="image-modal">
-  <img id="modalImage" src="">
-</div>
-  
+
+  <!-- Modal phóng ảnh xem trước -->
+  <div id="imageModal" class="image-modal">
+    <img id="modalImage" src="">
+  </div>
+
+  <script type="module">
+    import { db, auth } from './Scripts/firebase.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // Cho phép 1 số tài khoản nhất định
+    const allowedEmails = [
+      "nhtho.thcttpl@sobaclieu.edu.vn",
+      "nguyenhuuthoplbl@gmail.com",
+      "ngngaplbl@gmail.com"
+    ];
+
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        alert("⚠️ Bạn cần đăng nhập để đăng bài.");
+        window.location.href = "signin.html";
+      } else if (!allowedEmails.includes(user.email)) {
+        alert("❌ Bạn không có quyền đăng bài.");
+        window.location.href = "index.html";
+      }
+    });
+
+    // Hiển thị ảnh xem trước
+    const imageInput = document.getElementById("post-image");
+    const previewContainer = document.getElementById("imagePreviewContainer");
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+
+    imageInput.addEventListener("change", () => {
+      previewContainer.innerHTML = "";
+      const files = imageInput.files;
+      for (const file of files) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.onclick = () => {
+            modal.style.display = "flex";
+            modalImg.src = img.src;
+          };
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Đóng modal khi click ra ngoài
+    modal.onclick = (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    };
+  </script>
+
+  <!-- Gọi file xử lý chính -->
   <script type="module" src="Scripts/post.js"></script>
 </body>
 </html>
