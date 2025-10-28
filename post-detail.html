@@ -10,12 +10,23 @@
     <div id="post-detail">⏳ Đang tải bài viết...</div>
   </div>
 
+  <!-- ===== Modal xem ảnh ===== -->
+  <div id="imageModal" class="image-modal">
+    <span class="close-btn">&times;</span>
+    <img id="modalImage" src="">
+    <div class="zoom-controls">
+      <button id="zoomIn">🔍 Phóng to</button>
+      <button id="zoomOut">🔎 Thu nhỏ</button>
+      <button id="resetZoom">↩️ Đặt lại</button>
+    </div>
+  </div>
+
   <script type="module">
     import { db, auth } from './Scripts/firebase.js';
     import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    // Danh sách email có quyền quản trị
+    // Danh sách email có quyền xóa bài
     const allowedEmails = [
       "nhtho.thcttpl@sobaclieu.edu.vn",
       "nguyenhuuthoplbl@gmail.com",
@@ -44,8 +55,6 @@
 
         const post = docSnap.data();
         const date = post.createdAt?.toDate().toLocaleString("vi-VN") || "Chưa rõ";
-
-        // Kiểm tra nếu người dùng có quyền → hiện nút XÓA
         const canDelete = user && allowedEmails.includes(user.email);
 
         postDetailDiv.innerHTML = `
@@ -62,24 +71,92 @@
           </div>
         `;
 
+        // ===== Nếu người dùng có quyền thì thêm sự kiện xóa =====
         if (canDelete) {
           document.getElementById("delete-post").addEventListener("click", async () => {
-            if (confirm("⚠️ Bạn có chắc chắn muốn xóa bài viết này không?")) {
+            const confirmBox = confirm("⚠️ Bạn có chắc chắn muốn xóa bài viết này không?");
+            if (!confirmBox) return;
+
+            try {
               await deleteDoc(docRef);
               alert("✅ Đã xóa bài viết thành công!");
               window.location.href = "index.html";
+            } catch (err) {
+              alert("❌ Lỗi khi xóa bài viết: " + err.message);
             }
           });
         }
+
       } catch (error) {
         postDetailDiv.innerHTML = `<p style="color:red">❌ Lỗi tải dữ liệu: ${error.message}</p>`;
       }
     }
 
-    // Khi người dùng đăng nhập
+    // Theo dõi người dùng đăng nhập
     onAuthStateChanged(auth, user => {
       currentUser = user;
       loadPost(user);
+    });
+
+    // ===== Modal xem ảnh (phóng to / thu nhỏ / kéo ảnh) =====
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    const closeBtn = document.querySelector(".close-btn");
+    const zoomInBtn = document.getElementById("zoomIn");
+    const zoomOutBtn = document.getElementById("zoomOut");
+    const resetZoomBtn = document.getElementById("resetZoom");
+
+    let zoom = 1, posX = 0, posY = 0;
+    let isDragging = false, startX, startY;
+
+    document.addEventListener("click", (e) => {
+      if (e.target.tagName === "IMG" && e.target.classList.contains("detail-img")) {
+        modal.style.display = "flex";
+        modalImg.src = e.target.src;
+        zoom = 1;
+        posX = posY = 0;
+        modalImg.style.transform = "translate(0,0) scale(1)";
+      }
+    });
+
+    closeBtn.onclick = () => modal.style.display = "none";
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+    zoomInBtn.onclick = () => {
+      zoom = Math.min(zoom + 0.2, 10);
+      modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
+    };
+    zoomOutBtn.onclick = () => {
+      zoom = Math.max(zoom - 0.2, 0.5);
+      modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
+    };
+    resetZoomBtn.onclick = () => {
+      zoom = 1;
+      posX = posY = 0;
+      modalImg.style.transform = "translate(0,0) scale(1)";
+    };
+
+    modalImg.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      startX = e.clientX - posX;
+      startY = e.clientY - posY;
+      modalImg.style.cursor = "grabbing";
+    });
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+      modalImg.style.cursor = "grab";
+    });
+    window.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      posX = e.clientX - startX;
+      posY = e.clientY - startY;
+      modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
+    });
+    modalImg.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.2 : -0.2;
+      zoom = Math.min(Math.max(zoom + delta, 0.5), 10);
+      modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
     });
   </script>
 </body>
