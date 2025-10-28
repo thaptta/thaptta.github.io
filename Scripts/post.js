@@ -12,7 +12,6 @@ const allowedEmails = [
 
 let currentUser = null;
 
-// 🧾 Kiểm tra đăng nhập & quyền
 onAuthStateChanged(auth, user => {
   if (!user) {
     alert("⚠️ Bạn cần đăng nhập để đăng bài.");
@@ -25,9 +24,8 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-// 🔹 Hàm upload lên Imgbb
 async function uploadImageToImgbb(file) {
-  const apiKey = "2c029887fa5071fb59b4d79f44f96a7f"; // 🔑 API key Imgbb
+  const apiKey = "2c029887fa5071fb59b4d79f44f96a7f"; 
   const formData = new FormData();
   formData.append("image", file);
   const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
@@ -39,14 +37,13 @@ async function uploadImageToImgbb(file) {
   return result.data.url;
 }
 
-// 📝 Gửi bài viết
 window.submitPost = async function () {
   const title = document.getElementById("post-title").value.trim();
   const content = document.getElementById("post-content").value.trim();
   const category = document.getElementById("post-category").value.trim();
   const msg = document.getElementById("post-message");
 
-  const imageFile = document.getElementById("post-image").files[0];
+  const imageFiles = document.getElementById("post-image").files; // nhiều ảnh
   const attachFile = document.getElementById("post-file").files[0];
 
   if (!title || !content || !category) {
@@ -59,18 +56,24 @@ window.submitPost = async function () {
   msg.style.color = "gray";
 
   try {
-    let imageUrl = "";
-    let fileUrl = "";
+    const imageUrls = [];
 
-    if (imageFile) imageUrl = await uploadImageToImgbb(imageFile);
-    if (attachFile) fileUrl = await uploadImageToImgbb(attachFile);
+    for (const file of imageFiles) {
+      const url = await uploadImageToImgbb(file);
+      imageUrls.push(url);
+    }
+
+    let fileUrl = "";
+    if (attachFile) {
+      fileUrl = await uploadImageToImgbb(attachFile);
+    }
 
     await addDoc(collection(db, "posts"), {
       title,
       content,
       category,
       author: currentUser.email,
-      imageUrl,
+      images: imageUrls, // lưu mảng ảnh thay vì 1 ảnh
       fileUrl,
       createdAt: serverTimestamp()
     });
@@ -84,3 +87,17 @@ window.submitPost = async function () {
     msg.style.color = "red";
   }
 };
+
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  document.querySelectorAll(".post-img").forEach(img => {
+    img.addEventListener("click", () => {
+      modal.style.display = "flex";
+      modalImg.src = img.src;
+    });
+  });
+
+  modal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });

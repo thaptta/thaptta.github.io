@@ -20,18 +20,28 @@
     <input type="text" id="post-title" placeholder="Tiêu đề bài viết">
     <textarea id="post-content" placeholder="Nội dung bài viết..."></textarea>
 
+<<<<<<< HEAD
     <!--  Chọn ảnh -->
     <label>Ảnh minh họa:</label>
     <input type="file" id="post-image" accept="image/*">
 
     <!--  Chọn tệp đính kèm -->
+=======
+    <label>Ảnh minh họa (chọn nhiều ảnh nếu muốn):</label>
+    <input type="file" id="post-image" accept="image/*" multiple>
+
+>>>>>>> ad0f2cd3e32262185065ae10c98474a479c6c250
     <label>Tệp đính kèm (PDF, DOCX...):</label>
     <input type="file" id="post-file" accept=".pdf,.doc,.docx,.txt">
 
     <button class="btn" onclick="submitPost()">Đăng bài</button>
     <p id="post-message"></p>
   </div>
-
+  
+<div id="imageModal" class="image-modal">
+  <img id="modalImage" src="">
+</div>
+  
   <script type="module" src="Scripts/post.js"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
   <title>📄 Chi tiết bài viết</title>
   <link rel="stylesheet" href="Styles/1.css">
   <style>
+<<<<<<< HEAD
     /* ===== Modal xem ảnh ===== */
 .image-modal {
   display: none;
@@ -66,12 +67,79 @@
   border-radius: 10px;
   transition: transform 0.3s ease;
 }
+=======
+    .detail-container {
+      max-width: 800px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .detail-img {
+      width: 100%;
+      border-radius: 10px;
+      margin: 15px 0;
+      cursor: zoom-in;
+      transition: transform 0.3s ease;
+    }
+
+    .detail-img:hover {
+      transform: scale(1.03);
+    }
+
+    /* Modal hiển thị ảnh lớn */
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .image-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.4);
+    }
+
+    .btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+      .detail-container {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+>>>>>>> ad0f2cd3e32262185065ae10c98474a479c6c250
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div id="post-detail">⏳ Đang tải bài viết...</div>
+  <div class="detail-container" id="post-detail">⏳ Đang tải bài viết...</div>
+
+  <div id="imageModal" class="image-modal">
+    <img id="modalImage" src="">
   </div>
 
   <!-- 🔍 Modal xem ảnh -->
@@ -111,19 +179,45 @@
         const post = docSnap.data();
         const date = post.createdAt?.toDate().toLocaleString("vi-VN") || "Chưa rõ";
 
+        // Nếu có nhiều ảnh
+        let imagesHTML = "";
+        if (post.images && Array.isArray(post.images)) {
+          imagesHTML = post.images.map(url => `
+            <img src="${url}" class="detail-img" alt="Ảnh bài viết" loading="lazy">
+          `).join("");
+        } else if (post.imageUrl) {
+          imagesHTML = `<img src="${post.imageUrl}" class="detail-img" alt="Ảnh bài viết">`;
+        }
+
         postDetailDiv.innerHTML = `
           <h2>${post.title}</h2>
           <p><strong>🕓 Ngày đăng:</strong> ${date}</p>
-          <p><strong>👤 Tác giả:</strong> ${post.author}</p>
-          <p><strong>📂 Danh mục:</strong> ${post.category}</p>
-          ${post.imageUrl ? `<img src="${post.imageUrl}" class="detail-img">` : ""}
+          <p><strong>👤 Tác giả:</strong> ${post.author || "Không rõ"}</p>
+          <p><strong>📂 Danh mục:</strong> ${post.category || "Không có"}</p>
+          <div>${imagesHTML}</div>
           <p>${post.content}</p>
-          ${post.fileUrl ? `<p><a href="${post.fileUrl}" target="_blank">📎 Xem tệp đính kèm</a></p>` : ""}
+          ${post.fileUrl ? `<p><a href="${post.fileUrl}" target="_blank" class="btn">📎 Xem tệp đính kèm</a></p>` : ""}
           <button onclick="window.history.back()" class="btn">⬅️ Quay lại</button>
         `;
+
+        // Kích hoạt modal xem ảnh
+        setupImageModal();
       } catch (error) {
         postDetailDiv.innerHTML = `<p style="color:red">❌ Lỗi tải dữ liệu: ${error.message}</p>`;
       }
+    }
+
+    // Hàm hiển thị ảnh lớn
+    function setupImageModal() {
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+      document.querySelectorAll(".detail-img").forEach(img => {
+        img.addEventListener("click", () => {
+          modal.style.display = "flex";
+          modalImg.src = img.src;
+        });
+      });
+      modal.addEventListener("click", () => modal.style.display = "none");
     }
 
     loadPost();
