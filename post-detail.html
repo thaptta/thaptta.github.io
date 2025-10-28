@@ -4,148 +4,16 @@
   <meta charset="UTF-8">
   <title>📄 Chi tiết bài viết</title>
   <link rel="stylesheet" href="Styles/1.css">
-  <style>
-<<<<<<< HEAD
-    /* ===== Modal xem ảnh ===== */
-.image-modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.85);
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.image-modal img {
-  max-width: 95%;
-  max-height: 85%;
-  transition: transform 0.25s ease;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255,255,255,0.3);
-  cursor: grab;
-}
-
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 40px;
-  font-size: 35px;
-  color: white;
-  cursor: pointer;
-}
-
-.zoom-controls {
-  margin-top: 15px;
-}
-
-.zoom-controls button {
-  margin: 0 6px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 8px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.zoom-controls button:hover {
-  background-color: #0056b3;
-}
-
-.detail-img {
-  max-width: 70%;
-  display: block;
-  margin: 10px auto;
-  cursor: zoom-in;
-  border-radius: 10px;
-  transition: transform 0.3s ease;
-}
-=======
-    .detail-container {
-      max-width: 800px;
-      margin: 50px auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      font-family: "Segoe UI", sans-serif;
-    }
-
-    .detail-img {
-      width: 100%;
-      border-radius: 10px;
-      margin: 15px 0;
-      cursor: zoom-in;
-      transition: transform 0.3s ease;
-    }
-
-    .detail-img:hover {
-      transform: scale(1.03);
-    }
-
-    /* Modal hiển thị ảnh lớn */
-    .image-modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .image-modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.4);
-    }
-
-    .btn {
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .btn:hover {
-      background: #0056b3;
-    }
-
-    @media (max-width: 600px) {
-      .detail-container {
-        margin: 20px;
-        padding: 15px;
-      }
-    }
->>>>>>> ad0f2cd3e32262185065ae10c98474a479c6c250
-  </style>
 </head>
-
 <body>
-  <div class="detail-container" id="post-detail">⏳ Đang tải bài viết...</div>
-
-  <div id="imageModal" class="image-modal">
-    <img id="modalImage" src="">
+  <div class="container">
+    <div id="post-detail">⏳ Đang tải bài viết...</div>
   </div>
 
-  <!-- 🔍 Modal xem ảnh -->
+  <!-- ===== Modal xem ảnh ===== -->
   <div id="imageModal" class="image-modal">
     <span class="close-btn">&times;</span>
-    <img id="modalImage" src="" alt="">
+    <img id="modalImage" src="">
     <div class="zoom-controls">
       <button id="zoomIn">🔍 Phóng to</button>
       <button id="zoomOut">🔎 Thu nhỏ</button>
@@ -179,123 +47,94 @@
         const post = docSnap.data();
         const date = post.createdAt?.toDate().toLocaleString("vi-VN") || "Chưa rõ";
 
-        // Nếu có nhiều ảnh
-        let imagesHTML = "";
-        if (post.images && Array.isArray(post.images)) {
-          imagesHTML = post.images.map(url => `
-            <img src="${url}" class="detail-img" alt="Ảnh bài viết" loading="lazy">
-          `).join("");
-        } else if (post.imageUrl) {
-          imagesHTML = `<img src="${post.imageUrl}" class="detail-img" alt="Ảnh bài viết">`;
-        }
-
         postDetailDiv.innerHTML = `
           <h2>${post.title}</h2>
           <p><strong>🕓 Ngày đăng:</strong> ${date}</p>
-          <p><strong>👤 Tác giả:</strong> ${post.author || "Không rõ"}</p>
-          <p><strong>📂 Danh mục:</strong> ${post.category || "Không có"}</p>
-          <div>${imagesHTML}</div>
+          <p><strong>👤 Tác giả:</strong> ${post.author}</p>
+          <p><strong>📂 Danh mục:</strong> ${post.category}</p>
+          ${post.imageUrl ? `<img src="${post.imageUrl}" class="detail-img">` : ""}
           <p>${post.content}</p>
-          ${post.fileUrl ? `<p><a href="${post.fileUrl}" target="_blank" class="btn">📎 Xem tệp đính kèm</a></p>` : ""}
+          ${post.fileUrl ? `<p><a href="${post.fileUrl}" target="_blank">📎 Xem tệp đính kèm</a></p>` : ""}
           <button onclick="window.history.back()" class="btn">⬅️ Quay lại</button>
         `;
-
-        // Kích hoạt modal xem ảnh
-        setupImageModal();
       } catch (error) {
         postDetailDiv.innerHTML = `<p style="color:red">❌ Lỗi tải dữ liệu: ${error.message}</p>`;
       }
     }
 
-    // Hàm hiển thị ảnh lớn
-    function setupImageModal() {
-      const modal = document.getElementById("imageModal");
-      const modalImg = document.getElementById("modalImage");
-      document.querySelectorAll(".detail-img").forEach(img => {
-        img.addEventListener("click", () => {
-          modal.style.display = "flex";
-          modalImg.src = img.src;
-        });
-      });
-      modal.addEventListener("click", () => modal.style.display = "none");
-    }
-
     loadPost();
 
     // ===== Modal xem ảnh =====
-const modal = document.getElementById("imageModal");
-const modalImg = document.getElementById("modalImage");
-const closeBtn = document.querySelector(".close-btn");
-const zoomInBtn = document.getElementById("zoomIn");
-const zoomOutBtn = document.getElementById("zoomOut");
-const resetZoomBtn = document.getElementById("resetZoom");
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    const closeBtn = document.querySelector(".close-btn");
+    const zoomInBtn = document.getElementById("zoomIn");
+    const zoomOutBtn = document.getElementById("zoomOut");
+    const resetZoomBtn = document.getElementById("resetZoom");
 
-let zoom = 1;
-let isDragging = false;
-let startX, startY, translateX = 0, translateY = 0;
+    let zoom = 1;
+    let posX = 0, posY = 0;
+    let isDragging = false;
+    let startX, startY;
 
-// Khi click ảnh chi tiết
-document.addEventListener("click", (e) => {
-  if (e.target.tagName === "IMG" && e.target.classList.contains("detail-img")) {
-    modal.style.display = "flex";
-    modalImg.src = e.target.src;
-    zoom = 1;
-    translateX = 0;
-    translateY = 0;
-    modalImg.style.transform = "translate(0, 0) scale(1)";
-  }
-});
+    // Khi click vào ảnh trong bài viết
+    document.addEventListener("click", (e) => {
+      if (e.target.tagName === "IMG" && e.target.classList.contains("detail-img")) {
+        modal.style.display = "flex";
+        modalImg.src = e.target.src;
+        zoom = 1;
+        posX = posY = 0;
+        modalImg.style.transform = "translate(0,0) scale(1)";
+      }
+    });
 
-// Đóng modal
-closeBtn.onclick = () => modal.style.display = "none";
-modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+    // Đóng modal
+    closeBtn.onclick = () => modal.style.display = "none";
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 
-// Zoom sâu hơn (tối đa 10x)
-zoomInBtn.onclick = () => {
-  zoom = Math.min(zoom + 0.5, 10);
-  updateTransform();
-};
+    // Phóng to / thu nhỏ / đặt lại
+    zoomInBtn.onclick = () => {
+      zoom = Math.min(zoom + 0.2, 10);
+      modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
+    };
+    zoomOutBtn.onclick = () => {
+      zoom = Math.max(zoom - 0.2, 0.5);
+      modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
+    };
+    resetZoomBtn.onclick = () => {
+      zoom = 1;
+      posX = posY = 0;
+      modalImg.style.transform = "translate(0,0) scale(1)";
+    };
 
-// Thu nhỏ (tối thiểu 0.5x)
-zoomOutBtn.onclick = () => {
-  zoom = Math.max(0.5, zoom - 0.5);
-  updateTransform();
-};
+    // Kéo ảnh để xem quanh
+    modalImg.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      startX = e.clientX - posX;
+      startY = e.clientY - posY;
+      modalImg.style.cursor = "grabbing";
+    });
 
-// Đặt lại vị trí + tỉ lệ
-resetZoomBtn.onclick = () => {
-  zoom = 1;
-  translateX = 0;
-  translateY = 0;
-  updateTransform();
-};
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+      modalImg.style.cursor = "grab";
+    });
 
-// Cập nhật hiệu ứng
-function updateTransform() {
-  modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoom})`;
-}
+    window.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      posX = e.clientX - startX;
+      posY = e.clientY - startY;
+      modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
+    });
 
-// Kéo ảnh khi zoom
-modalImg.addEventListener("mousedown", (e) => {
-  if (zoom > 1) {
-    isDragging = true;
-    startX = e.clientX - translateX;
-    startY = e.clientY - translateY;
-    modalImg.style.cursor = "grabbing";
-  }
-});
-
-window.addEventListener("mouseup", () => {
-  isDragging = false;
-  modalImg.style.cursor = "grab";
-});
-
-window.addEventListener("mousemove", (e) => {
-  if (!isDragging) return;
-  translateX = e.clientX - startX;
-  translateY = e.clientY - startY;
-  updateTransform();
-});
+    // Zoom bằng con lăn chuột
+    modalImg.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.2 : -0.2;
+      zoom = Math.min(Math.max(zoom + delta, 0.5), 10);
+      modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
+    });
   </script>
 </body>
 </html>
+
