@@ -4,20 +4,93 @@
   <meta charset="UTF-8">
   <title>📄 Chi tiết bài viết</title>
   <link rel="stylesheet" href="Styles/1.css">
+  <style>
+    /* ===== Modal xem ảnh ===== */
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.image-modal img {
+  max-width: 95%;
+  max-height: 85%;
+  transition: transform 0.25s ease;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255,255,255,0.3);
+  cursor: grab;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  font-size: 35px;
+  color: white;
+  cursor: pointer;
+}
+
+.zoom-controls {
+  margin-top: 15px;
+}
+
+.zoom-controls button {
+  margin: 0 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.zoom-controls button:hover {
+  background-color: #0056b3;
+}
+
+.detail-img {
+  max-width: 70%;
+  display: block;
+  margin: 10px auto;
+  cursor: zoom-in;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+  </style>
 </head>
+
 <body>
   <div class="container">
     <div id="post-detail">⏳ Đang tải bài viết...</div>
+  </div>
+
+  <!-- 🔍 Modal xem ảnh -->
+  <div id="imageModal" class="image-modal">
+    <span class="close-btn">&times;</span>
+    <img id="modalImage" src="" alt="">
+    <div class="zoom-controls">
+      <button id="zoomIn">🔍 Phóng to</button>
+      <button id="zoomOut">🔎 Thu nhỏ</button>
+      <button id="resetZoom">↩️ Đặt lại</button>
+    </div>
   </div>
 
   <script type="module">
     import { db } from './Scripts/firebase.js';
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 🔹 Lấy ID bài viết từ URL (?id=...)
     const params = new URLSearchParams(window.location.search);
     const postId = params.get("id");
-
     const postDetailDiv = document.getElementById("post-detail");
 
     async function loadPost() {
@@ -54,6 +127,81 @@
     }
 
     loadPost();
+
+    // ===== Modal xem ảnh =====
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImage");
+const closeBtn = document.querySelector(".close-btn");
+const zoomInBtn = document.getElementById("zoomIn");
+const zoomOutBtn = document.getElementById("zoomOut");
+const resetZoomBtn = document.getElementById("resetZoom");
+
+let zoom = 1;
+let isDragging = false;
+let startX, startY, translateX = 0, translateY = 0;
+
+// Khi click ảnh chi tiết
+document.addEventListener("click", (e) => {
+  if (e.target.tagName === "IMG" && e.target.classList.contains("detail-img")) {
+    modal.style.display = "flex";
+    modalImg.src = e.target.src;
+    zoom = 1;
+    translateX = 0;
+    translateY = 0;
+    modalImg.style.transform = "translate(0, 0) scale(1)";
+  }
+});
+
+// Đóng modal
+closeBtn.onclick = () => modal.style.display = "none";
+modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+// Zoom sâu hơn (tối đa 10x)
+zoomInBtn.onclick = () => {
+  zoom = Math.min(zoom + 0.5, 10);
+  updateTransform();
+};
+
+// Thu nhỏ (tối thiểu 0.5x)
+zoomOutBtn.onclick = () => {
+  zoom = Math.max(0.5, zoom - 0.5);
+  updateTransform();
+};
+
+// Đặt lại vị trí + tỉ lệ
+resetZoomBtn.onclick = () => {
+  zoom = 1;
+  translateX = 0;
+  translateY = 0;
+  updateTransform();
+};
+
+// Cập nhật hiệu ứng
+function updateTransform() {
+  modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoom})`;
+}
+
+// Kéo ảnh khi zoom
+modalImg.addEventListener("mousedown", (e) => {
+  if (zoom > 1) {
+    isDragging = true;
+    startX = e.clientX - translateX;
+    startY = e.clientY - translateY;
+    modalImg.style.cursor = "grabbing";
+  }
+});
+
+window.addEventListener("mouseup", () => {
+  isDragging = false;
+  modalImg.style.cursor = "grab";
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  translateX = e.clientX - startX;
+  translateY = e.clientY - startY;
+  updateTransform();
+});
   </script>
 </body>
 </html>
