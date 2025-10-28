@@ -405,3 +405,51 @@ input[type="file"] {
   text-decoration: underline;
   color: #007bff;
 }
+
+.post-img {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  display: block;
+  margin: 15px auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .post-img {
+    max-width: 100%;
+    max-height: 250px;
+  }
+}
+
+.image-modal {
+  display: none; 
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.image-modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255,255,255,0.3);
+  transition: transform 0.3s ease;
+}
+
+.image-modal img:hover {
+  transform: scale(1.03);
+}
+
+.post-img {
+  cursor: zoom-in;
+}
