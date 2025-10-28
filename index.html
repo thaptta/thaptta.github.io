@@ -66,27 +66,6 @@
     <p>© 2025 Trường Tiểu học A Phong Thạnh Tây A</p>
   </footer>
 
-<!-- Modal hiển thị ảnh phóng to -->
-<div id="imageModal" class="image-modal">
-  <img id="modalImage" src="">
-</div>
-  
-<script>
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImage");
-
-  document.querySelectorAll(".post-img").forEach(img => {
-    img.addEventListener("click", () => {
-      modal.style.display = "flex";
-      modalImg.src = img.src;
-    });
-  });
-
-  modal.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-</script>
-
   <script type="module" src="Scripts/main.js"></script>
 </body>
 </html>
