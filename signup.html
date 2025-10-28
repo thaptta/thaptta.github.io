@@ -13,7 +13,6 @@
     <button class="btn" onclick="signup()">Đăng ký</button>
     <p id="signup-message"></p>
     <button class="btn ghost" onclick="goToLogin()">Đăng nhập</button>
-    </div>
   </div>
 
   <script>
@@ -21,7 +20,6 @@
       const email = document.getElementById("signup-email").value.trim();
       const password = document.getElementById("signup-password").value.trim();
       const message = document.getElementById("signup-message");
-      const loginSection = document.getElementById("login-section");
 
       if (!email || !password) {
         message.textContent = "⚠️ Vui lòng nhập đầy đủ thông tin!";
@@ -33,8 +31,10 @@
       message.textContent = "✅ Đăng ký thành công!";
       message.style.color = "green";
 
-      // Hiện nút đăng nhập
-      loginSection.style.display = "block";
+      // Chuyển đến trang đăng nhập sau 1.5 giây
+      setTimeout(() => {
+        window.location.href = "signin.html";
+      }, 1500);
     }
 
     function goToLogin() {
