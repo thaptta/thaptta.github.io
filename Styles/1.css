@@ -239,7 +239,6 @@ body {
   color: var(--secondary);
 }
 
-<<<<<<< HEAD
 /* ===== Footer ===== */
 .footer {
   background: var(--primary);
@@ -317,9 +316,8 @@ body {
 
 label {
   font-weight: bold;
-=======
+}
 .rightbar li span {
->>>>>>> ad0f2cd3e32262185065ae10c98474a479c6c250
   display: block;
   font-size: 12px;
   color: #777;
@@ -518,4 +516,3 @@ label {
 .hidden {
   display: none;
 }
-
