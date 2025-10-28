@@ -2,27 +2,24 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Đăng ký tài khoản</title>
+  <title>Đăng nhập tài khoản</title>
   <link rel="stylesheet" href="Styles/1.css">
 </head>
 <body>
   <div class="form-container">
-    <h2>🧾 Đăng ký tài khoản</h2>
-    <input type="email" id="signup-email" placeholder="Email">
-    <input type="password" id="signup-password" placeholder="Mật khẩu">
-    <button class="btn" onclick="signup()">Đăng ký</button>
-    <p id="signup-message"></p>
-    <div id="login-section" style="display: none;">
-      <button class="btn ghost" onclick="goToLogin()">Đăng nhập</button>
-    </div>
+    <h2>🔐 Đăng nhập tài khoản</h2>
+    <input type="email" id="signin-email" placeholder="Email">
+    <input type="password" id="signin-password" placeholder="Mật khẩu">
+    <button class="btn" onclick="signin()">Đăng nhập</button>
+    <p id="signin-message"></p>
+    <button class="btn ghost" onclick="goToSignup()">Đăng ký</button>
   </div>
 
   <script>
-    function signup() {
-      const email = document.getElementById("signup-email").value.trim();
-      const password = document.getElementById("signup-password").value.trim();
-      const message = document.getElementById("signup-message");
-      const loginSection = document.getElementById("login-section");
+    function signin() {
+      const email = document.getElementById("signin-email").value.trim();
+      const password = document.getElementById("signin-password").value.trim();
+      const message = document.getElementById("signin-message");
 
       if (!email || !password) {
         message.textContent = "⚠️ Vui lòng nhập đầy đủ thông tin!";
@@ -30,16 +27,18 @@
         return;
       }
 
-      // Mô phỏng đăng ký thành công
-      message.textContent = "✅ Đăng ký thành công!";
+      // Mô phỏng đăng nhập thành công (nếu sau này có Firebase thì thay ở đây)
+      message.textContent = "✅ Đăng nhập thành công!";
       message.style.color = "green";
 
-      // Hiện nút đăng nhập
-      loginSection.style.display = "block";
+      // Chuyển về trang chủ (hoặc index.html) sau 1.5 giây
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
     }
 
-    function goToLogin() {
-      window.location.href = "login.html";
+    function goToSignup() {
+      window.location.href = "signup.html";
     }
   </script>
 </body>
