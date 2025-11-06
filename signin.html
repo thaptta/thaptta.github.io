@@ -3,43 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <title>Đăng nhập tài khoản</title>
-  <link rel="stylesheet" href="Styles/1.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f4f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+    .form-container h2 { margin-bottom: 20px; color: #333; }
+    .input-group { position: relative; width: 100%; }
+    input[type="email"], input[type="password"] {
+      width: 100%; padding: 10px; margin: 10px 0;
+      border: 1px solid #ccc; border-radius: 8px; font-size: 15px;
+    }
+    .toggle-password {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #007bff;
+    }
+    .remember-container {
+      display: flex; justify-content: center; align-items: center;
+      gap: 8px; margin: 10px 0; font-size: 14px; color: #444;
+    }
+    .btn {
+      width: 48%; padding: 10px; font-size: 15px; border: none;
+      border-radius: 8px; cursor: pointer; color: white;
+      background: #007bff; transition: background 0.3s;
+    }
+    .btn:hover { background: #0056b3; }
+    .btn.ghost { background: #6c757d; }
+    .btn.ghost:hover { background: #555d64; }
+    .btn-row { display: flex; justify-content: space-between; margin-top: 10px; }
+    .forgot-password {
+      font-size: 13px; color: #888; text-decoration: none;
+      display: block; margin-top: 8px;
+    }
+    .forgot-password:hover { color: #333; text-decoration: underline; }
+    #signin-message { font-size: 14px; margin-top: 10px; }
+  </style>
 </head>
 <body>
   <div class="form-container">
     <h2>🔐 Đăng nhập tài khoản</h2>
     <input type="email" id="signin-email" placeholder="Email">
-    <input type="password" id="signin-password" placeholder="Mật khẩu">
-    <button class="btn" onclick="signin()">Đăng nhập</button>
+    <div class="input-group">
+      <input type="password" id="signin-password" placeholder="Mật khẩu">
+      <button type="button" class="toggle-password" id="togglePassword">👁</button>
+    </div>
+    <label class="remember-container">
+      <input type="checkbox" id="remember-me">
+      <span>Nhớ đăng nhập</span>
+    </label>
+    <div class="btn-row">
+      <button class="btn" onclick="signin()">Đăng nhập</button>
+      <button class="btn ghost" onclick="window.location.href='signup.html'">Đăng ký</button>
+    </div>
+    <a href="reset.html" class="forgot-password">Quên mật khẩu?</a>
     <p id="signin-message"></p>
-    <button class="btn ghost" onclick="goToSignup()">Đăng ký</button>
   </div>
 
   <script>
-    function signin() {
-      const email = document.getElementById("signin-email").value.trim();
-      const password = document.getElementById("signin-password").value.trim();
-      const message = document.getElementById("signin-message");
-
-      if (!email || !password) {
-        message.textContent = "⚠️ Vui lòng nhập đầy đủ thông tin!";
-        message.style.color = "red";
-        return;
-      }
-
-      // Mô phỏng đăng nhập thành công (nếu sau này có Firebase thì thay ở đây)
-      message.textContent = "✅ Đăng nhập thành công!";
-      message.style.color = "green";
-
-      // Chuyển về trang chủ (hoặc index.html) sau 1.5 giây
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 1500);
-    }
-
-    function goToSignup() {
-      window.location.href = "signup.html";
-    }
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("signin-password");
+    togglePassword.addEventListener("click", () => {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+      togglePassword.textContent = type === "password" ? "👁" : "🙈";
+    });
   </script>
+  <script type="module" src="Scripts/auth.js"></script>
 </body>
 </html>

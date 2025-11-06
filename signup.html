@@ -3,43 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <title>Đăng ký tài khoản</title>
-  <link rel="stylesheet" href="Styles/1.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f4f7;
+      display: flex; justify-content: center; align-items: center; height: 100vh;
+    }
+    .form-container {
+      background: white; padding: 35px 40px;
+      border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 360px; text-align: center;
+    }
+    h2 { color: #333; margin-bottom: 20px; }
+    input[type="email"], input[type="password"] {
+      width: 100%; padding: 10px; margin: 10px 0;
+      border: 1px solid #ccc; border-radius: 8px; font-size: 15px;
+    }
+    .password-container { position: relative; }
+    .toggle-password {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%); border: none; background: none;
+      cursor: pointer; color: #007bff;
+    }
+    .btn {
+      padding: 10px 20px; font-size: 15px;
+      border: none; border-radius: 8px; cursor: pointer;
+      color: white; background: #007bff;
+    }
+    .btn:hover { background: #0056b3; }
+    .btn.ghost { background: #6c757d; }
+    .btn.ghost:hover { background: #555d64; }
+    .btn-row {
+      display: flex; justify-content: space-between; gap: 10px; margin-top: 10px;
+    }
+    #signup-message { font-size: 14px; margin-top: 10px; }
+  </style>
 </head>
 <body>
   <div class="form-container">
     <h2>🧾 Đăng ký tài khoản</h2>
     <input type="email" id="signup-email" placeholder="Email">
-    <input type="password" id="signup-password" placeholder="Mật khẩu">
-    <button class="btn" onclick="signup()">Đăng ký</button>
+    <div class="password-container">
+      <input type="password" id="signup-password" placeholder="Mật khẩu">
+      <button type="button" class="toggle-password" id="togglePassword">👁</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="signup()">Đăng ký</button>
+      <button class="btn ghost" onclick="window.location.href='signin.html'">Đăng nhập</button>
+    </div>
     <p id="signup-message"></p>
-    <button class="btn ghost" onclick="goToLogin()">Đăng nhập</button>
   </div>
 
   <script>
-    function signup() {
-      const email = document.getElementById("signup-email").value.trim();
-      const password = document.getElementById("signup-password").value.trim();
-      const message = document.getElementById("signup-message");
-
-      if (!email || !password) {
-        message.textContent = "⚠️ Vui lòng nhập đầy đủ thông tin!";
-        message.style.color = "red";
-        return;
-      }
-
-      // Mô phỏng đăng ký thành công
-      message.textContent = "✅ Đăng ký thành công!";
-      message.style.color = "green";
-
-      // Chuyển đến trang đăng nhập sau 1.5 giây
-      setTimeout(() => {
-        window.location.href = "signin.html";
-      }, 1500);
-    }
-
-    function goToLogin() {
-      window.location.href = "signin.html";
-    }
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("signup-password");
+    togglePassword.addEventListener("click", () => {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+      togglePassword.textContent = type === "password" ? "👁" : "🙈";
+    });
   </script>
+  <script type="module" src="Scripts/auth.js"></script>
 </body>
 </html>

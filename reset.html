@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quên mật khẩu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif; background-color: #f2f4f7;
+      display: flex; justify-content: center; align-items: center; height: 100vh;
+    }
+    .form-container {
+      background: white; padding: 30px 40px; border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 360px; text-align: center;
+    }
+    h2 { color: #333; margin-bottom: 20px; }
+    input[type="email"] {
+      width: 100%; padding: 10px; margin: 10px 0;
+      border: 1px solid #ccc; border-radius: 8px; font-size: 15px;
+    }
+    .btn {
+      width: 100%; padding: 10px; font-size: 15px; border: none;
+      border-radius: 8px; cursor: pointer; color: white;
+      background: #007bff;
+    }
+    .btn:hover { background: #0056b3; }
+    #reset-message { font-size: 14px; margin-top: 10px; }
+    .guide-box {
+      display: none; background: #f8f9fa; border: 1px solid #ddd;
+      border-radius: 10px; padding: 12px; margin-top: 15px;
+      text-align: left; font-size: 13px; color: #444;
+    }
+    .guide-box ul { margin: 8px 0 0 20px; }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>🔑 Quên mật khẩu</h2>
+    <p style="font-size:14px;color:#555;">Nhập email để nhận liên kết đặt lại mật khẩu.</p>
+    <input type="email" id="reset-email" placeholder="Email của bạn">
+    <button class="btn" onclick="resetPassword()">Gửi yêu cầu</button>
+    <p id="reset-message"></p>
+    <div id="reset-guide" class="guide-box">
+      <p><strong>📨 Cách kiểm tra email:</strong></p>
+      <ul>
+        <li>Mở <a href="https://mail.google.com" target="_blank">Gmail</a></li>
+        <li>Kiểm tra hộp thư "Hộp thư đến" hoặc "Spam"</li>
+        <li>Nhấp vào liên kết để đặt lại mật khẩu mới</li>
+      </ul>
+    </div>
+    <a href="signin.html" style="display:block;margin-top:15px;color:#888;">← Quay lại đăng nhập</a>
+  </div>
+  <script type="module" src="Scripts/auth.js"></script>
+</body>
+</html>

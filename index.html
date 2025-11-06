@@ -4,6 +4,133 @@
   <meta charset="UTF-8">
   <title>Trường Tiểu học A Phong Thạnh Tây A</title>
   <link rel="stylesheet" href="Styles/1.css">
+
+  <style>
+    /* ====== HEADER ====== */
+    .header {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 40px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      margin-right: 15px;
+    }
+
+    .title {
+      flex: 1;
+      text-align: left;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .title p {
+      margin: 2px 0 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    /* ====== USER AREA ====== */
+    #user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #user-info button {
+      background-color: white;
+      color: #007bff;
+      border: 1px solid white;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #user-info button:hover {
+      background-color: #0056b3;
+      color: white;
+    }
+
+    /* ====== NAVBAR ====== */
+    .navbar {
+      background-color: #3da9fc; /* Xanh biển nhạt */
+      padding: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .navbar ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex-wrap: wrap;
+    }
+
+    .navbar li {
+      margin: 0 10px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    /* ====== MAIN LAYOUT ====== */
+    .main {
+      display: flex;
+      gap: 20px;
+      padding: 20px 40px;
+    }
+
+    .sidebar, .rightbar {
+      width: 20%;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    }
+
+    .content {
+      flex: 1;
+    }
+
+    /* ====== FOOTER ====== */
+    .footer {
+      text-align: center;
+      background-color: #007bff;
+      color: white;
+      padding: 15px 0;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
 
@@ -15,7 +142,12 @@
         <h1>Trường Tiểu học A Phong Thạnh Tây A</h1>
         <p>Phòng Giáo dục và Đào tạo xã Phong Hiệp, tỉnh Cà Mau</p>
       </div>
-      <div id="user-info"></div>
+
+      <!-- 🔹 Tự động thay đổi theo đăng nhập / đăng xuất -->
+      <div id="user-info">
+        <button onclick="window.location.href='signin.html'">Đăng nhập</button>
+        <button onclick="window.location.href='signup.html'">Đăng ký</button>
+      </div>
     </div>
   </header>
 
@@ -67,6 +199,7 @@
   </footer>
 
   <!-- ===== Scripts ===== -->
+  <script type="module" src="Scripts/auth.js"></script>
   <script type="module" src="Scripts/main.js"></script>
 
 </body>

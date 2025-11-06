@@ -18,9 +18,10 @@ onAuthStateChanged(auth, user => {
     `;
   } else {
     info.innerHTML = `
-      <button class="btn ghost" onclick="window.location.href='signin.html'">Đăng nhập</button>
-      <button class="btn" onclick="window.location.href='signup.html'">Đăng ký</button>
-    `;
+  <button class="btn ghost" onclick="window.location.href='./signin.html'">Đăng nhập</button>
+  <button class="btn" onclick="window.location.href='./signup.html'">Đăng ký</button>
+`;
+
   }
 });
 
