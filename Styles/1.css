@@ -21,6 +21,7 @@ body {
   color: #111827;
   font-family: "Segoe UI", Arial, sans-serif;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* ===== HEADER ===== */
@@ -28,6 +29,7 @@ body {
   background: var(--primary);
   color: white;
   padding: 10px 0;
+  flex-shrink: 0;
 }
 
 .header-container {
@@ -58,6 +60,7 @@ body {
 /* ===== NAVBAR ===== */
 .navbar {
   background: var(--secondary);
+  flex-shrink: 0;
 }
 
 .navbar ul {
@@ -82,7 +85,7 @@ body {
 
 /* ===== BỐ CỤC CHÍNH ===== */
 .main {
-  flex: 1; /* chiếm hết phần còn lại giữa header và footer */
+  flex: 1; 
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
@@ -91,7 +94,7 @@ body {
   padding: 20px 0;
   box-sizing: border-box;
   width: 100%;
-  overflow-y: auto; /* cho phép phần giữa cuộn */
+  overflow-y: auto; 
 }
 
 /* ===== SIDEBAR ===== */
@@ -215,4 +218,17 @@ body {
   .sidebar {
     display: none;
   }
+}
+
+/* ===== Căn chỉnh TẤT CẢ ảnh trong trang chi tiết bài viết ===== */
+.post-detail img,
+.article-content img,
+.content img {
+  max-width: 90%;          /* ảnh không vượt quá 90% chiều ngang khung */
+  height: auto;             /* giữ nguyên tỉ lệ */
+  display: block;           /* căn giữa */
+  margin: 20px auto;        /* căn giữa và tạo khoảng cách */
+  border-radius: 10px;      /* bo góc nhẹ */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* đổ bóng nhẹ cho sang */
+  object-fit: contain;      /* không bị méo nếu ảnh có kích thước lạ */
 }

@@ -4,6 +4,110 @@
   <meta charset="UTF-8">
   <title>📄 Chi tiết bài viết</title>
   <link rel="stylesheet" href="Styles/1.css">
+
+  <style>
+    /* ===== Chỉnh ảnh trong bài viết ===== */
+    #post-detail img {
+      max-width: 90%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      cursor: zoom-in;
+    }
+
+    #post-detail img:hover {
+      transform: scale(1.02);
+    }
+
+    /* ===== Nút và bố cục ===== */
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      text-align: center;
+      color: #004c91;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .btn {
+      background: #0073e6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #005bb5;
+    }
+
+    /* ===== Modal xem ảnh ===== */
+    .image-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    .image-modal img {
+      max-width: 90%;
+      max-height: 80vh;
+      cursor: grab;
+      border-radius: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 36px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .zoom-controls {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .zoom-controls button {
+      background: #0073e6;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .zoom-controls button:hover {
+      background: #005bb5;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -26,7 +130,6 @@
     import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    // Danh sách email có quyền xóa bài
     const allowedEmails = [
       "nhtho.thcttpl@sobaclieu.edu.vn",
       "nguyenhuuthoplbl@gmail.com",
@@ -36,7 +139,6 @@
     const params = new URLSearchParams(window.location.search);
     const postId = params.get("id");
     const postDetailDiv = document.getElementById("post-detail");
-    let currentUser = null;
 
     async function loadPost(user) {
       if (!postId) {
@@ -71,34 +173,24 @@
           </div>
         `;
 
-        // ===== Nếu người dùng có quyền thì thêm sự kiện xóa =====
         if (canDelete) {
           document.getElementById("delete-post").addEventListener("click", async () => {
-            const confirmBox = confirm("⚠️ Bạn có chắc chắn muốn xóa bài viết này không?");
-            if (!confirmBox) return;
-
-            try {
-              await deleteDoc(docRef);
-              alert("✅ Đã xóa bài viết thành công!");
-              window.location.href = "index.html";
-            } catch (err) {
-              alert("❌ Lỗi khi xóa bài viết: " + err.message);
-            }
+            if (!confirm("⚠️ Bạn có chắc chắn muốn xóa bài viết này không?")) return;
+            await deleteDoc(docRef);
+            alert("✅ Đã xóa bài viết thành công!");
+            window.location.href = "index.html";
           });
         }
-
       } catch (error) {
         postDetailDiv.innerHTML = `<p style="color:red">❌ Lỗi tải dữ liệu: ${error.message}</p>`;
       }
     }
 
-    // Theo dõi người dùng đăng nhập
     onAuthStateChanged(auth, user => {
-      currentUser = user;
       loadPost(user);
     });
 
-    // ===== Modal xem ảnh (phóng to / thu nhỏ / kéo ảnh) =====
+    // Modal zoom ảnh
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("modalImage");
     const closeBtn = document.querySelector(".close-btn");
@@ -131,8 +223,7 @@
       modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${zoom})`;
     };
     resetZoomBtn.onclick = () => {
-      zoom = 1;
-      posX = posY = 0;
+      zoom = 1; posX = posY = 0;
       modalImg.style.transform = "translate(0,0) scale(1)";
     };
 
@@ -142,10 +233,7 @@
       startY = e.clientY - posY;
       modalImg.style.cursor = "grabbing";
     });
-    window.addEventListener("mouseup", () => {
-      isDragging = false;
-      modalImg.style.cursor = "grab";
-    });
+    window.addEventListener("mouseup", () => { isDragging = false; modalImg.style.cursor = "grab"; });
     window.addEventListener("mousemove", (e) => {
       if (!isDragging) return;
       posX = e.clientX - startX;
